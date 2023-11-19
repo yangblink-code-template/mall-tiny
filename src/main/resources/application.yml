@@ -6,6 +6,9 @@ spring:
     name: mall-tiny
   profiles:
     active: dev
+  jackson:
+    time-zone: GMT
+    date-format: yyyy-MM-dd HH:mm:ss
 #  main:
 #    allow-circular-references: true
   mvc:

@@ -1,0 +1,95 @@
+package ${package.Controller};
+
+import com.macro.mall.tiny.common.api.CommonPage;
+import com.macro.mall.tiny.common.api.CommonResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import org.springframework.web.bind.annotation.RequestMapping;
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+    #set($serviceInstance = $table.serviceName.substring(0,1).toLowerCase() + $table.serviceName.substring(1))
+    #set($entityInstance = $entity.substring(0,1).toLowerCase() + $entity.substring(1))
+    @Autowired
+    ${table.serviceName} ${serviceInstance};
+
+    @GetMapping(value = "/list")
+    CommonResult getList(
+        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum
+    ) {
+        Page<${entity}> list = ${serviceInstance}.listByPage(pageNum, pageSize);
+        return CommonResult.success(CommonPage.restPage(list));
+    }
+
+    @GetMapping("/get/{id}")
+    CommonResult getById(@PathVariable(value = "id") Integer id) {
+        ${entity} em = ${serviceInstance}.getById(id);
+        return CommonResult.success(em);
+    }
+
+    @PostMapping("/delete/{id}")
+    CommonResult deleteById(@PathVariable(value = "id") Integer id) {
+        boolean suc = ${serviceInstance}.removeById(id);
+        if (suc) {
+            return CommonResult.success(suc);
+        } else {
+            return CommonResult.failed("delete failed");
+        }
+    }
+
+    @PostMapping("/add")
+    CommonResult add(@RequestBody ${entity} ${entityInstance}) {
+        boolean saved = ${serviceInstance}.save(${entityInstance});
+        if (saved) {
+            return CommonResult.success(true);
+        } else {
+            return CommonResult.failed("add failed");
+        }
+    }
+
+    @PostMapping("/saveOrUpdate")
+    CommonResult saveOrUpdate(@RequestBody ${entity} ${entityInstance})  {
+        boolean saved = ${serviceInstance}.saveOrUpdate(${entityInstance});
+        if (saved) {
+            return CommonResult.success(true);
+        } else {
+            return CommonResult.failed("update failed");
+        }
+    }
+}
+
+#end

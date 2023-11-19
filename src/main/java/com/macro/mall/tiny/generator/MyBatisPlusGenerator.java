@@ -94,7 +94,13 @@ public class MyBatisPlusGenerator {
      */
     private static TemplateConfig initTemplateConfig() {
         //可以对controller、service、entity模板进行配置
-        return new TemplateConfig.Builder().build();
+        return new TemplateConfig.Builder()
+                .entity("/template/enity")
+                .controller("/template/controller.java")
+                .service("/template/service.java")
+                .serviceImpl("/template/serviceImpl.java")
+                .build();
+//        return new TemplateConfig.Builder().build();
     }
 
     /**
