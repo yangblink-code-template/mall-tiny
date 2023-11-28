@@ -53,5 +53,10 @@ public class UmsMenu implements Serializable {
     @ApiModelProperty(value = "前端隐藏")
     private Integer hidden;
 
+    @ApiModelProperty(value = "前端组件路径")
+    private String component;
+
+    @ApiModelProperty(value = "跟路径重定向")
+    private String redirect;
 
 }
